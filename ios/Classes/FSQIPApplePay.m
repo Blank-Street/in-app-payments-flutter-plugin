@@ -173,37 +173,41 @@ static NSString *const FSQIPMessageApplePayNotSupported = @"This device does not
             NSMutableDictionary *jsonObject = [NSMutableDictionary dictionaryWithDictionary:[result jsonDictionary]];
             
             if (payment.shippingContact != nil) {
-                NSMutableDictionary *contactJson = [[NSMutableDictionary alloc] init];
+                NSMutableDictionary *shippingContact = [[NSMutableDictionary alloc] init];
                 
                 if (payment.shippingContact.emailAddress != nil) {
-                    [contactJson setObject:payment.shippingContact.emailAddress forKey:@"email"];
+                    [shippingContact setObject:payment.shippingContact.emailAddress forKey:@"email"];
                 }
                 
                 if (payment.shippingContact.phoneNumber.stringValue != nil) {
-                    [contactJson setObject:payment.shippingContact.phoneNumber.stringValue forKey:@"phoneNumber"];
+                    [shippingContact setObject:payment.shippingContact.phoneNumber.stringValue forKey:@"phoneNumber"];
                 }
                 
                 if (payment.shippingContact.name != nil) {
                     NSMutableDictionary *nameJson = [[NSMutableDictionary alloc] init];
                     
                     if (payment.shippingContact.name.givenName != nil) {
-                        [contactJson setObject:payment.shippingContact.name.givenName forKey:@"givenName"];
+                        [nameJson setObject:payment.shippingContact.name.givenName forKey:@"givenName"];
                     }
                     
                     if (payment.shippingContact.name.middleName != nil) {
-                        [contactJson setObject:payment.shippingContact.name.middleName forKey:@"middleName"];
+                        [nameJson setObject:payment.shippingContact.name.middleName forKey:@"middleName"];
                     }
                     
                     if (payment.shippingContact.name.familyName != nil) {
-                        [contactJson setObject:payment.shippingContact.name.familyName forKey:@"familyName"];
+                        [nameJson setObject:payment.shippingContact.name.familyName forKey:@"familyName"];
                     }
                     
                     if (payment.shippingContact.name.nameSuffix != nil) {
-                        [contactJson setObject:payment.shippingContact.name.nameSuffix forKey:@"nameSuffix"];
+                        [nameJson setObject:payment.shippingContact.name.nameSuffix forKey:@"nameSuffix"];
                     }
                     
                     if (payment.shippingContact.name.nickname != nil) {
-                        [contactJson setObject:payment.shippingContact.name.nickname forKey:@"nickname"];
+                        [nameJson setObject:payment.shippingContact.name.nickname forKey:@"nickname"];
+                    }
+                    
+                    if ([nameJson count] > 0) {
+                        [shippingContact setObject:nameJson forKey:@"name"];
                     }
                 }
                 
@@ -217,7 +221,13 @@ static NSString *const FSQIPMessageApplePayNotSupported = @"This device does not
                         @"isoCountryCode": payment.shippingContact.postalAddress.ISOCountryCode,
                     };
                     
-                    [contactJson setObject:postalAddress forKey:@"postalAddress"];
+                    [shippingContact setObject:postalAddress forKey:@"shippingAddress"];
+                } else {
+                    [shippingContact setObject:[[NSMutableDictionary alloc] init] forKey:@"shippingAddress"];
+                }
+                
+                if ([shippingContact count] > 0) {
+                    [jsonObject setObject:shippingContact forKey:@"shippingContact"];
                 }
                 
             }
