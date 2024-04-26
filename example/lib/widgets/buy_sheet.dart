@@ -18,8 +18,7 @@ import 'dart:async';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:square_in_app_payments/google_pay_constants.dart'
-    as google_pay_constants;
+import 'package:square_in_app_payments/google_pay_constants.dart' as google_pay_constants;
 import 'package:square_in_app_payments/in_app_payments.dart';
 import 'package:square_in_app_payments/models.dart';
 import 'package:uuid/uuid.dart';
@@ -40,14 +39,9 @@ class BuySheet extends StatefulWidget {
   final bool? googlePayEnabled;
   final String? squareLocationId;
   final String? applePayMerchantId;
-  static final GlobalKey<ScaffoldState> scaffoldKey =
-      GlobalKey<ScaffoldState>();
+  static final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  BuySheet(
-      {this.applePayEnabled,
-      this.googlePayEnabled,
-      this.applePayMerchantId,
-      this.squareLocationId});
+  BuySheet({this.applePayEnabled, this.googlePayEnabled, this.applePayMerchantId, this.squareLocationId});
 
   @override
   BuySheetState createState() => BuySheetState();
@@ -63,13 +57,12 @@ class BuySheetState extends State<BuySheet> {
   bool get _applePayMerchantIdSet => widget.applePayMerchantId != "REPLACE_ME";
 
   void _showOrderSheet() async {
-    var selection =
-        await custom_modal_bottom_sheet.showModalBottomSheet<PaymentType>(
-            context: BuySheet.scaffoldKey.currentState!.context,
-            builder: (context) => OrderSheet(
-                  applePayEnabled: widget.applePayEnabled!,
-                  googlePayEnabled: widget.googlePayEnabled!,
-                ));
+    var selection = await custom_modal_bottom_sheet.showModalBottomSheet<PaymentType>(
+        context: BuySheet.scaffoldKey.currentState!.context,
+        builder: (context) => OrderSheet(
+              applePayEnabled: widget.applePayEnabled!,
+              googlePayEnabled: widget.googlePayEnabled!,
+            ));
 
     switch (selection) {
       case PaymentType.giftcardPayment:
@@ -141,8 +134,7 @@ class BuySheetState extends State<BuySheet> {
     }
   }
 
-  void _showUrlNotSetAndPrintCurlCommand(String nonce,
-      {String? verificationToken}) {
+  void _showUrlNotSetAndPrintCurlCommand(String nonce, {String? verificationToken}) {
     String title;
     if (verificationToken != null) {
       title = "Nonce and verification token generated but not charged";
@@ -162,8 +154,7 @@ class BuySheetState extends State<BuySheet> {
     showAlertDialog(
         context: BuySheet.scaffoldKey.currentContext!,
         title: "Missing Square Location ID",
-        description:
-            "To request a Google Pay nonce, replace squareLocationId in main.dart with a Square Location ID.",
+        description: "To request a Google Pay nonce, replace squareLocationId in main.dart with a Square Location ID.",
         status: false);
   }
 
@@ -181,23 +172,20 @@ class BuySheetState extends State<BuySheet> {
       showAlertDialog(
           context: BuySheet.scaffoldKey.currentContext!,
           title: "Congratulation,Your order was successful",
-          description:
-              "Go to your Square dashboard to see this order reflected in the sales tab.",
+          description: "Go to your Square dashboard to see this order reflected in the sales tab.",
           status: true);
     }
   }
 
   void _onCardEntryCardNonceRequestSuccess(CardDetails result) async {
     if (!_chargeServerHostReplaced) {
-      InAppPayments.completeCardEntry(
-          onCardEntryComplete: _onCardEntryComplete);
+      InAppPayments.completeCardEntry(onCardEntryComplete: _onCardEntryComplete);
       _showUrlNotSetAndPrintCurlCommand(result.nonce);
       return;
     }
     try {
       await chargeCard(result.nonce);
-      InAppPayments.completeCardEntry(
-          onCardEntryComplete: _onCardEntryComplete);
+      InAppPayments.completeCardEntry(onCardEntryComplete: _onCardEntryComplete);
     } on ChargeException catch (ex) {
       InAppPayments.showCardNonceProcessingError(ex.errorMessage);
     }
@@ -212,8 +200,7 @@ class BuySheetState extends State<BuySheet> {
 
   Future<void> _onStartGiftCardEntryFlow() async {
     await InAppPayments.startGiftCardEntryFlow(
-        onCardNonceRequestSuccess: _onCardEntryCardNonceRequestSuccess,
-        onCardEntryCancel: _onCancelCardEntryFlow);
+        onCardNonceRequestSuccess: _onCardEntryCardNonceRequestSuccess, onCardEntryCancel: _onCancelCardEntryFlow);
   }
 
   Future<void> _onStartCardEntryFlowWithBuyerVerification() async {
@@ -224,8 +211,7 @@ class BuySheetState extends State<BuySheet> {
     var contact = Contact((b) => b
       ..givenName = "John"
       ..familyName = "Doe"
-      ..addressLines =
-          BuiltList<String>(["London Eye", "Riverside Walk"]).toBuilder()
+      ..addressLines = BuiltList<String>(["London Eye", "Riverside Walk"]).toBuilder()
       ..city = "London"
       ..countryCode = "GB"
       ..email = "johndoe@example.com"
@@ -251,8 +237,7 @@ class BuySheetState extends State<BuySheet> {
     var contact = Contact((b) => b
       ..givenName = "John"
       ..familyName = "Doe"
-      ..addressLines =
-          BuiltList<String>(["London Eye", "Riverside Walk"]).toBuilder()
+      ..addressLines = BuiltList<String>(["London Eye", "Riverside Walk"]).toBuilder()
       ..city = "London"
       ..countryCode = "GB"
       ..email = "johndoe@example.com"
@@ -301,8 +286,7 @@ class BuySheetState extends State<BuySheet> {
       showAlertDialog(
           context: BuySheet.scaffoldKey.currentContext!,
           title: "Congratulation,Your order was successful",
-          description:
-              "Go to your Square dashbord to see this order reflected in the sales tab.",
+          description: "Go to your Square dashbord to see this order reflected in the sales tab.",
           status: true);
     } on ChargeException catch (ex) {
       showAlertDialog(
@@ -328,16 +312,16 @@ class BuySheetState extends State<BuySheet> {
   void _onStartApplePay() async {
     try {
       await InAppPayments.requestApplePayNonce(
-          price: getCookieAmount(),
-          summaryLabel: 'Cookie',
-          countryCode: 'US',
-          currencyCode: 'USD',
-          paymentType: ApplePayPaymentType.finalPayment,
-          onApplePayNonceRequestSuccess: _onApplePayNonceRequestSuccess,
-          onApplePayNonceRequestFailure: _onApplePayNonceRequestFailure,
-          onApplePayComplete: _onApplePayEntryComplete,
-          contactFields: [ShippingContactField.email, ShippingContactField.phoneNumber],
-          );
+        price: getCookieAmount(),
+        summaryLabel: 'Cookie',
+        countryCode: 'US',
+        currencyCode: 'USD',
+        paymentType: ApplePayPaymentType.finalPayment,
+        onApplePayNonceRequestSuccess: _onApplePayNonceRequestSuccess,
+        onApplePayNonceRequestFailure: _onApplePayNonceRequestFailure,
+        onApplePayComplete: _onApplePayEntryComplete,
+        contactFields: [ShippingContactField.email, ShippingContactField.phoneNumber],
+      );
     } on PlatformException catch (ex) {
       showAlertDialog(
           context: BuySheet.scaffoldKey.currentContext!,
@@ -349,8 +333,7 @@ class BuySheetState extends State<BuySheet> {
 
   void _onBuyerVerificationSuccess(BuyerVerificationDetails result) async {
     if (!_chargeServerHostReplaced) {
-      _showUrlNotSetAndPrintCurlCommand(result.nonce,
-          verificationToken: result.token);
+      _showUrlNotSetAndPrintCurlCommand(result.nonce, verificationToken: result.token);
       return;
     }
 
@@ -377,13 +360,11 @@ class BuySheetState extends State<BuySheet> {
       showAlertDialog(
           context: BuySheet.scaffoldKey.currentContext!,
           title: "Congratulation,Your order was successful",
-          description:
-              "Go to your Square dashbord to see this order reflected in the sales tab.",
+          description: "Go to your Square dashbord to see this order reflected in the sales tab.",
           status: true);
       await InAppPayments.completeApplePayAuthorization(isSuccess: true);
     } on ChargeException catch (ex) {
-      await InAppPayments.completeApplePayAuthorization(
-          isSuccess: false, errorMessage: ex.errorMessage);
+      await InAppPayments.completeApplePayAuthorization(isSuccess: false, errorMessage: ex.errorMessage);
       showAlertDialog(
           context: BuySheet.scaffoldKey.currentContext!,
           title: "Error processing ApplePay payment",
@@ -395,8 +376,7 @@ class BuySheetState extends State<BuySheet> {
 
   void _onApplePayNonceRequestFailure(ErrorInfo errorInfo) async {
     _applePayStatus = ApplePayStatus.fail;
-    await InAppPayments.completeApplePayAuthorization(
-        isSuccess: false, errorMessage: errorInfo.message);
+    await InAppPayments.completeApplePayAuthorization(isSuccess: false, errorMessage: errorInfo.message);
     showAlertDialog(
         context: BuySheet.scaffoldKey.currentContext!,
         title: "Error request ApplePay nonce",

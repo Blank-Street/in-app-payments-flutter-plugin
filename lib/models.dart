@@ -86,8 +86,7 @@ class CardType extends EnumClass {
 }
 
 class CardPrepaidType extends EnumClass {
-  static Serializer<CardPrepaidType> get serializer =>
-      _$cardPrepaidTypeSerializer;
+  static Serializer<CardPrepaidType> get serializer => _$cardPrepaidTypeSerializer;
 
   @BuiltValueEnumConst(wireName: 'PREPAID')
   static const CardPrepaidType prepaid = _$prepaid;
@@ -103,8 +102,7 @@ class CardPrepaidType extends EnumClass {
 }
 
 class ApplePayPaymentType extends EnumClass {
-  static Serializer<ApplePayPaymentType> get serializer =>
-      _$applePayPaymentTypeSerializer;
+  static Serializer<ApplePayPaymentType> get serializer => _$applePayPaymentTypeSerializer;
 
   @BuiltValueEnumConst(wireName: 'FINAL')
   static const ApplePayPaymentType finalPayment = _$finalPayment;
@@ -113,10 +111,8 @@ class ApplePayPaymentType extends EnumClass {
 
   const ApplePayPaymentType._(String name) : super(name);
 
-  static BuiltSet<ApplePayPaymentType> get values =>
-      _$applePayPaymentTypeValues;
-  static ApplePayPaymentType valueOf(String name) =>
-      _$applePayPaymentTypeValueOf(name);
+  static BuiltSet<ApplePayPaymentType> get values => _$applePayPaymentTypeValues;
+  static ApplePayPaymentType valueOf(String name) => _$applePayPaymentTypeValueOf(name);
 }
 
 abstract class CardDetails implements Built<CardDetails, CardDetailsBuilder> {
@@ -128,69 +124,51 @@ abstract class CardDetails implements Built<CardDetails, CardDetailsBuilder> {
   static Serializer<CardDetails> get serializer => _$cardDetailsSerializer;
 }
 
-abstract class PaymentInfo implements Built<PaymentInfo, PaymentInfoBuilder> {
-  String get nonce;
-  Card get card;
-  ShippingContact? get shippingContact;
+class PaymentInfo {
+  PaymentInfo({required this.nonce, required this.card, required this.shippingContact});
 
-  PaymentInfo._();
-  factory PaymentInfo([updates(PaymentInfoBuilder b) /*!*/]) = _$PaymentInfo;
-  static Serializer<PaymentInfo> get serializer => _$paymentInfoSerializer;
-
+  final String nonce;
+  final Card card;
+  final ShippingContact? shippingContact;
 }
 
-abstract class ShippingContact implements Built<ShippingContact, ShippingContactBuilder> {
-  String get phoneNumber;
-  String get email;
-  Card get card;
-  ShippingPostalAddress? get shippingAddress;
-  ShippingContactName? get name;
+class ShippingContact  {
+  ShippingContact({required this.phoneNumber, required this.email, required this.shippingAddress, required this.name});
 
-  ShippingContact._();
-  factory ShippingContact([updates(ShippingContactBuilder b) /*!*/]) = _$ShippingContact;
-  static Serializer<ShippingContact> get serializer => _$shippingContactSerializer;
-
+  final String? phoneNumber;
+  final String? email;
+  final ShippingPostalAddress? shippingAddress;
+  final ShippingContactName? name;
 }
 
-abstract class ShippingPostalAddress implements Built<ShippingPostalAddress, ShippingPostalAddressBuilder> {
-  String get street;
-  String get city;
-  String get postalCode;
-  String get country;
-  String get isoCountryCode;
+class ShippingPostalAddress {
+  ShippingPostalAddress({required this.street, required this.city, required this.postalCode, required this.country, required this.isoCountryCode});
 
-  ShippingPostalAddress._();
-  factory ShippingPostalAddress([updates(ShippingPostalAddressBuilder b) /*!*/]) = _$ShippingPostalAddress;
-  static Serializer<ShippingPostalAddress> get serializer => _$shippingPostalAddressSerializer;
-
+  final String? street;
+  final String? city;
+  final String? postalCode;
+  final String? country;
+  final String? isoCountryCode;
 }
 
-abstract class ShippingContactName implements Built<ShippingContactName, ShippingContactNameBuilder> {
-  String? get givenName;
-  String? get middleName;
-  String? get familyName;
-  String? get nameSuffix;
-  String? get nickname;
+class ShippingContactName {
+  ShippingContactName({required this.givenName, required this.middleName, required this.familyName, required this.nameSuffix, required this.nickname});
 
-  ShippingContactName._();
-  factory ShippingContactName([updates(ShippingContactNameBuilder b) /*!*/]) = _$ShippingContactName;
-  static Serializer<ShippingContactName> get serializer => _$shippingContactNameSerializer;
-
+  final String? givenName;
+  final String? middleName;
+  final String? familyName;
+  final String? nameSuffix;
+  final String? nickname;
 }
 
-abstract class BuyerVerificationDetails
-    implements
-        Built<BuyerVerificationDetails, BuyerVerificationDetailsBuilder> {
+abstract class BuyerVerificationDetails implements Built<BuyerVerificationDetails, BuyerVerificationDetailsBuilder> {
   String get nonce;
   Card? get card;
   String get token;
 
   BuyerVerificationDetails._();
-  factory BuyerVerificationDetails(
-          [updates(BuyerVerificationDetailsBuilder b) /*!*/]) =
-      _$BuyerVerificationDetails;
-  static Serializer<BuyerVerificationDetails> get serializer =>
-      _$buyerVerificationDetailsSerializer;
+  factory BuyerVerificationDetails([updates(BuyerVerificationDetailsBuilder b) /*!*/]) = _$BuyerVerificationDetails;
+  static Serializer<BuyerVerificationDetails> get serializer => _$buyerVerificationDetailsSerializer;
 }
 
 abstract class Card implements Built<Card, CardBuilder> {
@@ -236,8 +214,7 @@ abstract class Font implements Built<Font, FontBuilder> {
 }
 
 class KeyboardAppearance extends EnumClass {
-  static Serializer<KeyboardAppearance> get serializer =>
-      _$keyboardAppearanceSerializer;
+  static Serializer<KeyboardAppearance> get serializer => _$keyboardAppearanceSerializer;
 
   @BuiltValueEnumConst(wireName: 'Dark')
   static const KeyboardAppearance dark = _$dark;
@@ -247,8 +224,7 @@ class KeyboardAppearance extends EnumClass {
   const KeyboardAppearance._(String name) : super(name);
 
   static BuiltSet<KeyboardAppearance> get values => _$keyboardAppearanceValues;
-  static KeyboardAppearance valueOf(String name) =>
-      _$keyboardAppearanceValueOf(name);
+  static KeyboardAppearance valueOf(String name) => _$keyboardAppearanceValueOf(name);
 }
 
 abstract class IOSTheme implements Built<IOSTheme, IOSThemeBuilder> {

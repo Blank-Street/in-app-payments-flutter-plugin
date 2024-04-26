@@ -121,8 +121,28 @@ class InAppPayments {
           break;
         case 'onApplePayNonceRequestSuccess':
           if (_applePayNonceRequestSuccessCallback != null) {
-            var result = _standardSerializers.deserializeWith(
-                PaymentInfo.serializer, call.arguments)!;
+            final result = PaymentInfo(
+              nonce: call.arguments['nonce'], 
+              card: _standardSerializers.deserializeWith(Card.serializer, call.arguments['card'])!, 
+              shippingContact: ShippingContact(
+                phoneNumber: call.arguments['shippingContact']?['phoneNumber'], 
+                email: call.arguments['shippingContact']?['email'], 
+                shippingAddress: ShippingPostalAddress(
+                  street: call.arguments['shippingContact']?['shippingAddress']?['street'], 
+                  city: call.arguments['shippingContact']?['shippingAddress']?['city'], 
+                  postalCode: call.arguments['shippingContact']?['shippingAddress']?['postalCode'], 
+                  country: call.arguments['shippingContact']?['shippingAddress']?['country'], 
+                  isoCountryCode: call.arguments['shippingContact']?['shippingAddress']?['isoCountryCode']
+                ), 
+                name: ShippingContactName(
+                  givenName: call.arguments['shippingContact']?['name']?['givenName'], 
+                  middleName: call.arguments['shippingContact']?['name']?['middleName'],
+                  familyName: call.arguments['shippingContact']?['name']?['familyName'],
+                  nameSuffix: call.arguments['shippingContact']?['name']?['nameSuffix'],
+                  nickname: call.arguments['shippingContact']?['name']?['nickname'],
+                )
+              ),
+            );
             _applePayNonceRequestSuccessCallback!(result);
           }
           break;
