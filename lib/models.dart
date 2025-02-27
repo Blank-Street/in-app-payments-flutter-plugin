@@ -132,7 +132,7 @@ class PaymentInfo {
   final ShippingContact? shippingContact;
 }
 
-class ShippingContact  {
+class ShippingContact {
   ShippingContact({required this.phoneNumber, required this.email, required this.shippingAddress, required this.name});
 
   final String? phoneNumber;
@@ -142,7 +142,12 @@ class ShippingContact  {
 }
 
 class ShippingPostalAddress {
-  ShippingPostalAddress({required this.street, required this.city, required this.postalCode, required this.country, required this.isoCountryCode});
+  ShippingPostalAddress(
+      {required this.street,
+      required this.city,
+      required this.postalCode,
+      required this.country,
+      required this.isoCountryCode});
 
   final String? street;
   final String? city;
@@ -152,7 +157,12 @@ class ShippingPostalAddress {
 }
 
 class ShippingContactName {
-  ShippingContactName({required this.givenName, required this.middleName, required this.familyName, required this.nameSuffix, required this.nickname});
+  ShippingContactName(
+      {required this.givenName,
+      required this.middleName,
+      required this.familyName,
+      required this.nameSuffix,
+      required this.nickname});
 
   final String? givenName;
   final String? middleName;
@@ -165,6 +175,7 @@ abstract class BuyerVerificationDetails implements Built<BuyerVerificationDetail
   String get nonce;
   Card? get card;
   String get token;
+  bool get didChallengeUser;
 
   BuyerVerificationDetails._();
   factory BuyerVerificationDetails([updates(BuyerVerificationDetailsBuilder b) /*!*/]) = _$BuyerVerificationDetails;

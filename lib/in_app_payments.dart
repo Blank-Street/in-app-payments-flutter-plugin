@@ -23,62 +23,46 @@ import 'src/serializers.dart';
 
 typedef CardEntryCancelCallback = void Function();
 typedef CardEntryCompleteCallback = void Function();
-typedef CardEntryCardNonceRequestSuccessCallback = void Function(
-    CardDetails result);
+typedef CardEntryCardNonceRequestSuccessCallback = void Function(CardDetails result);
 
-typedef GooglePayNonceRequestSuccessCallback = void Function(
-    CardDetails result);
-typedef GooglePayNonceRequestFailureCallback = void Function(
-    ErrorInfo errorInfo);
+typedef GooglePayNonceRequestSuccessCallback = void Function(CardDetails result);
+typedef GooglePayNonceRequestFailureCallback = void Function(ErrorInfo errorInfo);
 typedef GooglePayCancelCallback = void Function();
 
 typedef ApplePayNonceRequestSuccessCallback = void Function(PaymentInfo result);
-typedef ApplePayNonceRequestFailureCallback = void Function(
-    ErrorInfo errorInfo);
+typedef ApplePayNonceRequestFailureCallback = void Function(ErrorInfo errorInfo);
 typedef ApplePayCompleteCallback = void Function();
 
-typedef BuyerVerificationSuccessCallback = void Function(
-    BuyerVerificationDetails result);
+typedef BuyerVerificationSuccessCallback = void Function(BuyerVerificationDetails result);
 typedef BuyerVerificationErrorCallback = void Function(ErrorInfo errorInfo);
 
-typedef MasterCardNonceRequestSuccessCallback = void Function(
-    CardDetails result);
-typedef MasterCardNonceRequestFailureCallback = void Function(
-    ErrorInfo errorInfo);
+typedef MasterCardNonceRequestSuccessCallback = void Function(CardDetails result);
+typedef MasterCardNonceRequestFailureCallback = void Function(ErrorInfo errorInfo);
 
 // ignore: avoid_classes_with_only_static_members
 class InAppPayments {
-  static final MethodChannel _channel =
-      const MethodChannel('square_in_app_payments')
-        ..setMethodCallHandler(_nativeCallHandler);
+  static final MethodChannel _channel = const MethodChannel('square_in_app_payments')
+    ..setMethodCallHandler(_nativeCallHandler);
 
-  static final _standardSerializers =
-      (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
+  static final _standardSerializers = (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
 
   static CardEntryCancelCallback? _cardEntryCancelCallback;
-  static CardEntryCardNonceRequestSuccessCallback?
-      _cardEntryCardNonceRequestSuccessCallback;
+  static CardEntryCardNonceRequestSuccessCallback? _cardEntryCardNonceRequestSuccessCallback;
   static CardEntryCompleteCallback? _cardEntryCompleteCallback;
 
-  static GooglePayNonceRequestSuccessCallback?
-      _googlePayNonceRequestSuccessCallback;
-  static GooglePayNonceRequestFailureCallback?
-      _googlePayNonceRequestFailureCallback;
+  static GooglePayNonceRequestSuccessCallback? _googlePayNonceRequestSuccessCallback;
+  static GooglePayNonceRequestFailureCallback? _googlePayNonceRequestFailureCallback;
   static GooglePayCancelCallback? _googlePayCancelCallback;
 
-  static ApplePayNonceRequestSuccessCallback?
-      _applePayNonceRequestSuccessCallback;
-  static ApplePayNonceRequestFailureCallback?
-      _applePayNonceRequestFailureCallback;
+  static ApplePayNonceRequestSuccessCallback? _applePayNonceRequestSuccessCallback;
+  static ApplePayNonceRequestFailureCallback? _applePayNonceRequestFailureCallback;
   static ApplePayCompleteCallback? _applePayCompleteCallback;
 
   static BuyerVerificationSuccessCallback? _buyerVerificationSuccessCallback;
   static BuyerVerificationErrorCallback? _buyerVerificationErrorCallback;
 
-  static MasterCardNonceRequestSuccessCallback?
-      _masterCardNonceRequestSuccessCallback;
-  static MasterCardNonceRequestFailureCallback?
-      _masterCardNonceRequestFailureCallback;
+  static MasterCardNonceRequestSuccessCallback? _masterCardNonceRequestSuccessCallback;
+  static MasterCardNonceRequestFailureCallback? _masterCardNonceRequestFailureCallback;
 
   static Future<dynamic> _nativeCallHandler(MethodCall call) async {
     try {
@@ -90,8 +74,7 @@ class InAppPayments {
           break;
         case 'cardEntryDidObtainCardDetails':
           if (_cardEntryCardNonceRequestSuccessCallback != null) {
-            var result = _standardSerializers.deserializeWith(
-                CardDetails.serializer, call.arguments)!;
+            var result = _standardSerializers.deserializeWith(CardDetails.serializer, call.arguments)!;
             _cardEntryCardNonceRequestSuccessCallback!(result);
           }
           break;
@@ -107,49 +90,44 @@ class InAppPayments {
           break;
         case 'onGooglePayNonceRequestSuccess':
           if (_googlePayNonceRequestSuccessCallback != null) {
-            var result = _standardSerializers.deserializeWith(
-                CardDetails.serializer, call.arguments)!;
+            var result = _standardSerializers.deserializeWith(CardDetails.serializer, call.arguments)!;
             _googlePayNonceRequestSuccessCallback!(result);
           }
           break;
         case 'onGooglePayNonceRequestFailure':
           if (_googlePayNonceRequestFailureCallback != null) {
-            var errorInfo = _standardSerializers.deserializeWith(
-                ErrorInfo.serializer, call.arguments)!;
+            var errorInfo = _standardSerializers.deserializeWith(ErrorInfo.serializer, call.arguments)!;
             _googlePayNonceRequestFailureCallback!(errorInfo);
           }
           break;
         case 'onApplePayNonceRequestSuccess':
           if (_applePayNonceRequestSuccessCallback != null) {
             final result = PaymentInfo(
-              nonce: call.arguments['nonce'], 
-              card: _standardSerializers.deserializeWith(Card.serializer, call.arguments['card'])!, 
+              nonce: call.arguments['nonce'],
+              card: _standardSerializers.deserializeWith(Card.serializer, call.arguments['card'])!,
               shippingContact: ShippingContact(
-                phoneNumber: call.arguments['shippingContact']?['phoneNumber'], 
-                email: call.arguments['shippingContact']?['email'], 
-                shippingAddress: ShippingPostalAddress(
-                  street: call.arguments['shippingContact']?['shippingAddress']?['street'], 
-                  city: call.arguments['shippingContact']?['shippingAddress']?['city'], 
-                  postalCode: call.arguments['shippingContact']?['shippingAddress']?['postalCode'], 
-                  country: call.arguments['shippingContact']?['shippingAddress']?['country'], 
-                  isoCountryCode: call.arguments['shippingContact']?['shippingAddress']?['isoCountryCode']
-                ), 
-                name: ShippingContactName(
-                  givenName: call.arguments['shippingContact']?['name']?['givenName'], 
-                  middleName: call.arguments['shippingContact']?['name']?['middleName'],
-                  familyName: call.arguments['shippingContact']?['name']?['familyName'],
-                  nameSuffix: call.arguments['shippingContact']?['name']?['nameSuffix'],
-                  nickname: call.arguments['shippingContact']?['name']?['nickname'],
-                )
-              ),
+                  phoneNumber: call.arguments['shippingContact']?['phoneNumber'],
+                  email: call.arguments['shippingContact']?['email'],
+                  shippingAddress: ShippingPostalAddress(
+                      street: call.arguments['shippingContact']?['shippingAddress']?['street'],
+                      city: call.arguments['shippingContact']?['shippingAddress']?['city'],
+                      postalCode: call.arguments['shippingContact']?['shippingAddress']?['postalCode'],
+                      country: call.arguments['shippingContact']?['shippingAddress']?['country'],
+                      isoCountryCode: call.arguments['shippingContact']?['shippingAddress']?['isoCountryCode']),
+                  name: ShippingContactName(
+                    givenName: call.arguments['shippingContact']?['name']?['givenName'],
+                    middleName: call.arguments['shippingContact']?['name']?['middleName'],
+                    familyName: call.arguments['shippingContact']?['name']?['familyName'],
+                    nameSuffix: call.arguments['shippingContact']?['name']?['nameSuffix'],
+                    nickname: call.arguments['shippingContact']?['name']?['nickname'],
+                  )),
             );
             _applePayNonceRequestSuccessCallback!(result);
           }
           break;
         case 'onApplePayNonceRequestFailure':
           if (_applePayNonceRequestFailureCallback != null) {
-            var errorInfo = _standardSerializers.deserializeWith(
-                ErrorInfo.serializer, call.arguments)!;
+            var errorInfo = _standardSerializers.deserializeWith(ErrorInfo.serializer, call.arguments)!;
             _applePayNonceRequestFailureCallback!(errorInfo);
           }
           break;
@@ -160,29 +138,25 @@ class InAppPayments {
           break;
         case 'onBuyerVerificationSuccess':
           if (_buyerVerificationSuccessCallback != null) {
-            var result = _standardSerializers.deserializeWith(
-                BuyerVerificationDetails.serializer, call.arguments)!;
+            var result = _standardSerializers.deserializeWith(BuyerVerificationDetails.serializer, call.arguments)!;
             _buyerVerificationSuccessCallback!(result);
           }
           break;
         case 'onBuyerVerificationError':
           if (_buyerVerificationErrorCallback != null) {
-            var errorInfo = _standardSerializers.deserializeWith(
-                ErrorInfo.serializer, call.arguments)!;
+            var errorInfo = _standardSerializers.deserializeWith(ErrorInfo.serializer, call.arguments)!;
             _buyerVerificationErrorCallback!(errorInfo);
           }
           break;
         case 'OnMasterCardNonceRequestSuccess':
           if (_masterCardNonceRequestSuccessCallback != null) {
-            var result = _standardSerializers.deserializeWith(
-                CardDetails.serializer, call.arguments)!;
+            var result = _standardSerializers.deserializeWith(CardDetails.serializer, call.arguments)!;
             _masterCardNonceRequestSuccessCallback!(result);
           }
           break;
         case 'OnMasterCardNonceRequestFailure':
           if (_masterCardNonceRequestFailureCallback != null) {
-            var errorInfo = _standardSerializers.deserializeWith(
-                ErrorInfo.serializer, call.arguments)!;
+            var errorInfo = _standardSerializers.deserializeWith(ErrorInfo.serializer, call.arguments)!;
             _masterCardNonceRequestFailureCallback!(errorInfo);
           }
           break;
@@ -205,8 +179,7 @@ class InAppPayments {
   }
 
   static Future startCardEntryFlow(
-      {required CardEntryCardNonceRequestSuccessCallback
-          onCardNonceRequestSuccess,
+      {required CardEntryCardNonceRequestSuccessCallback onCardNonceRequestSuccess,
       required CardEntryCancelCallback onCardEntryCancel,
       bool collectPostalCode = true}) async {
     _cardEntryCancelCallback = onCardEntryCancel;
@@ -218,16 +191,14 @@ class InAppPayments {
   }
 
   static Future startGiftCardEntryFlow(
-      {required CardEntryCardNonceRequestSuccessCallback
-          onCardNonceRequestSuccess,
+      {required CardEntryCardNonceRequestSuccessCallback onCardNonceRequestSuccess,
       required CardEntryCancelCallback onCardEntryCancel}) async {
     _cardEntryCancelCallback = onCardEntryCancel;
     _cardEntryCardNonceRequestSuccessCallback = onCardNonceRequestSuccess;
     await _channel.invokeMethod('startGiftCardEntryFlow');
   }
 
-  static Future completeCardEntry(
-      {required CardEntryCompleteCallback onCardEntryComplete}) async {
+  static Future completeCardEntry({required CardEntryCompleteCallback onCardEntryComplete}) async {
     _cardEntryCompleteCallback = onCardEntryComplete;
     await _channel.invokeMethod('completeCardEntry');
   }
@@ -239,10 +210,8 @@ class InAppPayments {
     await _channel.invokeMethod('showCardNonceProcessingError', params);
   }
 
-  static Future initializeGooglePay(
-      String squareLocationId, int environment) async {
-    assert(
-        squareLocationId.isNotEmpty, 'squareLocationId should not be empty.');
+  static Future initializeGooglePay(String squareLocationId, int environment) async {
+    assert(squareLocationId.isNotEmpty, 'squareLocationId should not be empty.');
     var params = <String, dynamic>{
       'environment': environment,
       'squareLocationId': squareLocationId,
@@ -254,10 +223,7 @@ class InAppPayments {
     try {
       return await (_channel.invokeMethod('canUseGooglePay'));
     } on PlatformException catch (ex) {
-      throw InAppPaymentsException(
-          ex.code,
-          ex.message,
-          ex.details[InAppPaymentsException.debugCodeKey],
+      throw InAppPaymentsException(ex.code, ex.message, ex.details[InAppPaymentsException.debugCodeKey],
           ex.details[InAppPaymentsException.debugMessageKey]);
     }
   }
@@ -266,10 +232,8 @@ class InAppPayments {
       {required String price,
       required String currencyCode,
       required int priceStatus,
-      required GooglePayNonceRequestSuccessCallback
-          onGooglePayNonceRequestSuccess,
-      required GooglePayNonceRequestFailureCallback
-          onGooglePayNonceRequestFailure,
+      required GooglePayNonceRequestSuccessCallback onGooglePayNonceRequestSuccess,
+      required GooglePayNonceRequestFailureCallback onGooglePayNonceRequestFailure,
       required GooglePayCancelCallback onGooglePayCanceled}) async {
     assert(price.isNotEmpty, 'price should not be empty.');
     assert(currencyCode.isNotEmpty, 'currencyCode should not be empty.');
@@ -285,39 +249,32 @@ class InAppPayments {
       };
       await _channel.invokeMethod('requestGooglePayNonce', params);
     } on PlatformException catch (ex) {
-      throw InAppPaymentsException(
-          ex.code,
-          ex.message,
-          ex.details[InAppPaymentsException.debugCodeKey],
+      throw InAppPaymentsException(ex.code, ex.message, ex.details[InAppPaymentsException.debugCodeKey],
           ex.details[InAppPaymentsException.debugMessageKey]);
     }
   }
 
   static Future initializeApplePay(String applePayMerchantId) async {
-    assert(applePayMerchantId.isNotEmpty,
-        'applePayMerchantId should not be empty.');
+    assert(applePayMerchantId.isNotEmpty, 'applePayMerchantId should not be empty.');
     var params = <String, dynamic>{
       'merchantId': applePayMerchantId,
     };
     await _channel.invokeMethod('initializeApplePay', params);
   }
 
-  static Future<bool> get canUseApplePay async =>
-      await (_channel.invokeMethod('canUseApplePay'));
+  static Future<bool> get canUseApplePay async => await (_channel.invokeMethod('canUseApplePay'));
 
-  static Future requestApplePayNonce(
-      {required String price,
-      required String summaryLabel,
-      required String countryCode,
-      required String currencyCode,
-      required ApplePayPaymentType paymentType,
-      required ApplePayNonceRequestSuccessCallback
-          onApplePayNonceRequestSuccess,
-      required ApplePayNonceRequestFailureCallback
-          onApplePayNonceRequestFailure,
-      required ApplePayCompleteCallback onApplePayComplete,
-      List<ShippingContactField> contactFields = const [],
-      }) async {
+  static Future requestApplePayNonce({
+    required String price,
+    required String summaryLabel,
+    required String countryCode,
+    required String currencyCode,
+    required ApplePayPaymentType paymentType,
+    required ApplePayNonceRequestSuccessCallback onApplePayNonceRequestSuccess,
+    required ApplePayNonceRequestFailureCallback onApplePayNonceRequestFailure,
+    required ApplePayCompleteCallback onApplePayComplete,
+    List<ShippingContactField> contactFields = const [],
+  }) async {
     assert(summaryLabel.isNotEmpty, 'summaryLabel should not be empty.');
     assert(price.isNotEmpty, 'price should not be empty.');
     assert(countryCode.isNotEmpty, 'countryCode should not be empty.');
@@ -327,8 +284,7 @@ class InAppPayments {
     _applePayNonceRequestFailureCallback = onApplePayNonceRequestFailure;
     _applePayCompleteCallback = onApplePayComplete;
 
-    var paymentTypeString = _standardSerializers.serializeWith(
-        ApplePayPaymentType.serializer, paymentType);
+    var paymentTypeString = _standardSerializers.serializeWith(ApplePayPaymentType.serializer, paymentType);
     try {
       var params = <String, dynamic>{
         'price': price,
@@ -340,16 +296,12 @@ class InAppPayments {
       };
       await _channel.invokeMethod('requestApplePayNonce', params);
     } on PlatformException catch (ex) {
-      throw InAppPaymentsException(
-          ex.code,
-          ex.message,
-          ex.details[InAppPaymentsException.debugCodeKey],
+      throw InAppPaymentsException(ex.code, ex.message, ex.details[InAppPaymentsException.debugCodeKey],
           ex.details[InAppPaymentsException.debugMessageKey]);
     }
   }
 
-  static Future completeApplePayAuthorization(
-      {required bool isSuccess, String errorMessage = ''}) async {
+  static Future completeApplePayAuthorization({required bool isSuccess, String errorMessage = ''}) async {
     var params = <String, dynamic>{
       'isSuccess': isSuccess,
       'errorMessage': errorMessage,
@@ -362,7 +314,7 @@ class InAppPayments {
       required BuyerVerificationErrorCallback onBuyerVerificationFailure,
       required CardEntryCancelCallback onCardEntryCancel,
       required String buyerAction,
-      required Money money,
+      required Money? money,
       required String squareLocationId,
       required Contact contact,
       bool collectPostalCode = true}) async {
@@ -371,21 +323,19 @@ class InAppPayments {
     _cardEntryCancelCallback = onCardEntryCancel;
     var params = <String, dynamic>{
       'buyerAction': buyerAction,
-      'money': _standardSerializers.serializeWith(Money.serializer, money),
-      'contact':
-          _standardSerializers.serializeWith(Contact.serializer, contact),
+      'money': money != null ? _standardSerializers.serializeWith(Money.serializer, money) : null,
+      'contact': _standardSerializers.serializeWith(Contact.serializer, contact),
       'squareLocationId': squareLocationId,
       'collectPostalCode': collectPostalCode,
     };
-    await _channel.invokeMethod(
-        'startCardEntryFlowWithBuyerVerification', params);
+    await _channel.invokeMethod('startCardEntryFlowWithBuyerVerification', params);
   }
 
   static Future startBuyerVerificationFlow(
       {required BuyerVerificationSuccessCallback onBuyerVerificationSuccess,
       required BuyerVerificationErrorCallback onBuyerVerificationFailure,
       required String buyerAction,
-      required Money money,
+      required Money? money,
       required String squareLocationId,
       required Contact contact,
       required String paymentSourceId}) async {
@@ -393,9 +343,8 @@ class InAppPayments {
     _buyerVerificationErrorCallback = onBuyerVerificationFailure;
     var params = <String, dynamic>{
       'buyerAction': buyerAction,
-      'money': _standardSerializers.serializeWith(Money.serializer, money),
-      'contact':
-          _standardSerializers.serializeWith(Contact.serializer, contact),
+      'money': money != null ? _standardSerializers.serializeWith(Money.serializer, money) : null,
+      'contact': _standardSerializers.serializeWith(Contact.serializer, contact),
       'squareLocationId': squareLocationId,
       'paymentSourceId': paymentSourceId,
     };
@@ -411,10 +360,8 @@ class InAppPayments {
 
   static Future startSecureRemoteCommerce(
       {required int amount,
-      required MasterCardNonceRequestSuccessCallback
-          onMaterCardNonceRequestSuccess,
-      required MasterCardNonceRequestFailureCallback
-          onMasterCardNonceRequestFailure}) async {
+      required MasterCardNonceRequestSuccessCallback onMaterCardNonceRequestSuccess,
+      required MasterCardNonceRequestFailureCallback onMasterCardNonceRequestFailure}) async {
     _masterCardNonceRequestSuccessCallback = onMaterCardNonceRequestSuccess;
     _masterCardNonceRequestFailureCallback = onMasterCardNonceRequestFailure;
     var params = <String, dynamic>{'amount': amount};
@@ -426,8 +373,7 @@ class InAppPaymentsException implements Exception {
   static const String debugCodeKey = 'debugCode';
   static const String debugMessageKey = 'debugMessage';
 
-  static final _standardSerializers =
-      (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
+  static final _standardSerializers = (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
 
   final String _code;
 
@@ -437,13 +383,10 @@ class InAppPaymentsException implements Exception {
 
   final String? debugMessage;
 
-  ErrorCode? get code =>
-      _standardSerializers.deserializeWith(ErrorCode.serializer, _code);
+  ErrorCode? get code => _standardSerializers.deserializeWith(ErrorCode.serializer, _code);
 
-  InAppPaymentsException(
-      this._code, this.message, this.debugCode, this.debugMessage);
+  InAppPaymentsException(this._code, this.message, this.debugCode, this.debugMessage);
 
   @override
-  String toString() =>
-      'InAppPaymentException($code, $message, $debugCode, $debugMessage)';
+  String toString() => 'InAppPaymentException($code, $message, $debugCode, $debugMessage)';
 }

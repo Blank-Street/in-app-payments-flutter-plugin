@@ -147,7 +147,7 @@ final public class CardEntryModule {
   public void startCardEntryFlowWithBuyerVerification(MethodChannel.Result result, boolean collectPostalCode, String squareLocationId, String buyerActionString, Map<String, Object> moneyMap, Map<String, Object> contactMap) {
     SquareIdentifier squareIdentifier = new SquareIdentifier.LocationToken(squareLocationId);
 
-    Money money = getMoney(moneyMap);
+    Money money = moneyMap != null ? getMoney(moneyMap) : null;
     BuyerAction buyerAction = getBuyerAction(buyerActionString, money);
     Contact contact = getContact(contactMap);
 
@@ -162,7 +162,7 @@ final public class CardEntryModule {
   public void startBuyerVerificationFlow(MethodChannel.Result result, String buyerActionString, Map<String, Object> moneyMap, String squareLocationId, Map<String, Object> contactMap, String paymentSourceId) {
     SquareIdentifier squareIdentifier = new SquareIdentifier.LocationToken(squareLocationId);
 
-    Money money = getMoney(moneyMap);
+    Money money = moneyMap != null ? getMoney(moneyMap) : null;
     BuyerAction buyerAction = getBuyerAction(buyerActionString, money);
     Contact contact = getContact(contactMap);
 
@@ -254,11 +254,13 @@ final public class CardEntryModule {
               if(CardEntryModule.this.paymentSourceId == null) {
                 Map<String, Object> mapToReturn = cardDetailsConverter.toMapObject(CardEntryModule.this.cardResult);
                 mapToReturn.put("token", result.getSuccessValue().getVerificationToken());
+                mapToReturn.put("didChallengeUser", result.getSuccessValue().getHasChallengedUser());
                 channel.invokeMethod("onBuyerVerificationSuccess", mapToReturn);
               }else{
                 Map<String, Object> mapToReturn = new LinkedHashMap<>();
                 mapToReturn.put("nonce", CardEntryModule.this.paymentSourceId);
                 mapToReturn.put("token", result.getSuccessValue().getVerificationToken());
+                mapToReturn.put("didChallengeUser", result.getSuccessValue().getHasChallengedUser());
                 channel.invokeMethod("onBuyerVerificationSuccess", mapToReturn);
               }
             } else if (result.isError()) {

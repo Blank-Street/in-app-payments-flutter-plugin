@@ -72,7 +72,7 @@ static NSString *const FSQIPOnBuyerVerificationErrorEventName = @"onBuyerVerific
 
 - (void)startCardEntryFlowWithVerification:(FlutterResult)result collectPostalCode:(BOOL)collectPostalCode locationId:(NSString *)locationId buyerActionString:(NSString *)buyerActionString moneyMap:(NSDictionary *)moneyMap contactMap:(NSDictionary *)contactMap
 {
-    SQIPMoney * money = [self _getMoney:moneyMap];
+    SQIPMoney * money = [moneyMap isEqual:[NSNull null]] ? nil : [self _getMoney:moneyMap];
     SQIPBuyerAction * buyerAction = [self _getBuyerAction:buyerActionString money:money];
     SQIPContact * contact = [self _getContact:contactMap];
 
@@ -257,7 +257,7 @@ static NSString *const FSQIPOnBuyerVerificationErrorEventName = @"onBuyerVerific
 
 - (void)startBuyerVerificationFlow:(FlutterResult)result buyerActionString:(NSString *)buyerActionString moneyMap:(NSDictionary *)moneyMap locationId:(NSString *)locationId contactMap:(NSDictionary *)contactMap paymentSourceId:(NSString *)paymentSourceId
 {
-    SQIPMoney * money = [self _getMoney:moneyMap];
+    SQIPMoney * money = [moneyMap isEqual:[NSNull null]] ? nil : [self _getMoney:moneyMap];
     SQIPBuyerAction * buyerAction = [self _getBuyerAction:buyerActionString money:money];
     SQIPContact * contact = [self _getContact:contactMap];
 
@@ -284,7 +284,8 @@ static NSString *const FSQIPOnBuyerVerificationErrorEventName = @"onBuyerVerific
             NSDictionary *verificationResult =
                 @{
                     @"nonce" : paymentSourceId,
-                    @"token" : verifiedDetails.verificationToken
+                    @"token" : verifiedDetails.verificationToken,
+                    @"didChallengeUser": [NSNumber numberWithBool:verifiedDetails.didChallengeUser],
                 };
             [self.channel invokeMethod:FSQIPOnBuyerVerificationSuccessEventName
                 arguments:verificationResult];

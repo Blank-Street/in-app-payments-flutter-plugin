@@ -430,6 +430,9 @@ class _$BuyerVerificationDetailsSerializer
       'token',
       serializers.serialize(object.token,
           specifiedType: const FullType(String)),
+      'didChallengeUser',
+      serializers.serialize(object.didChallengeUser,
+          specifiedType: const FullType(bool)),
     ];
     Object? value;
     value = object.card;
@@ -465,6 +468,10 @@ class _$BuyerVerificationDetailsSerializer
         case 'token':
           result.token = serializers.deserialize(value,
               specifiedType: const FullType(String))! as String;
+          break;
+        case 'didChallengeUser':
+          result.didChallengeUser = serializers.deserialize(value,
+              specifiedType: const FullType(bool))! as bool;
           break;
       }
     }
@@ -1215,18 +1222,25 @@ class _$BuyerVerificationDetails extends BuyerVerificationDetails {
   final Card? card;
   @override
   final String token;
+  @override
+  final bool didChallengeUser;
 
   factory _$BuyerVerificationDetails(
           [void Function(BuyerVerificationDetailsBuilder)? updates]) =>
       (new BuyerVerificationDetailsBuilder()..update(updates))._build();
 
   _$BuyerVerificationDetails._(
-      {required this.nonce, this.card, required this.token})
+      {required this.nonce,
+      this.card,
+      required this.token,
+      required this.didChallengeUser})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(
         nonce, r'BuyerVerificationDetails', 'nonce');
     BuiltValueNullFieldError.checkNotNull(
         token, r'BuyerVerificationDetails', 'token');
+    BuiltValueNullFieldError.checkNotNull(
+        didChallengeUser, r'BuyerVerificationDetails', 'didChallengeUser');
   }
 
   @override
@@ -1244,7 +1258,8 @@ class _$BuyerVerificationDetails extends BuyerVerificationDetails {
     return other is BuyerVerificationDetails &&
         nonce == other.nonce &&
         card == other.card &&
-        token == other.token;
+        token == other.token &&
+        didChallengeUser == other.didChallengeUser;
   }
 
   @override
@@ -1253,6 +1268,7 @@ class _$BuyerVerificationDetails extends BuyerVerificationDetails {
     _$hash = $jc(_$hash, nonce.hashCode);
     _$hash = $jc(_$hash, card.hashCode);
     _$hash = $jc(_$hash, token.hashCode);
+    _$hash = $jc(_$hash, didChallengeUser.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -1262,7 +1278,8 @@ class _$BuyerVerificationDetails extends BuyerVerificationDetails {
     return (newBuiltValueToStringHelper(r'BuyerVerificationDetails')
           ..add('nonce', nonce)
           ..add('card', card)
-          ..add('token', token))
+          ..add('token', token)
+          ..add('didChallengeUser', didChallengeUser))
         .toString();
   }
 }
@@ -1284,6 +1301,11 @@ class BuyerVerificationDetailsBuilder
   String? get token => _$this._token;
   set token(String? token) => _$this._token = token;
 
+  bool? _didChallengeUser;
+  bool? get didChallengeUser => _$this._didChallengeUser;
+  set didChallengeUser(bool? didChallengeUser) =>
+      _$this._didChallengeUser = didChallengeUser;
+
   BuyerVerificationDetailsBuilder();
 
   BuyerVerificationDetailsBuilder get _$this {
@@ -1292,6 +1314,7 @@ class BuyerVerificationDetailsBuilder
       _nonce = $v.nonce;
       _card = $v.card?.toBuilder();
       _token = $v.token;
+      _didChallengeUser = $v.didChallengeUser;
       _$v = null;
     }
     return this;
@@ -1320,7 +1343,11 @@ class BuyerVerificationDetailsBuilder
                   nonce, r'BuyerVerificationDetails', 'nonce'),
               card: _card?.build(),
               token: BuiltValueNullFieldError.checkNotNull(
-                  token, r'BuyerVerificationDetails', 'token'));
+                  token, r'BuyerVerificationDetails', 'token'),
+              didChallengeUser: BuiltValueNullFieldError.checkNotNull(
+                  didChallengeUser,
+                  r'BuyerVerificationDetails',
+                  'didChallengeUser'));
     } catch (_) {
       late String _$failedField;
       try {
